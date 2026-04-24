@@ -70,3 +70,6 @@
 # Allow local customizations in the .gitconfig_local file
 [include]
   path = ~/.gitconfig_local
+[user]
+	email = sviridovcomp@gmail.com
+	name = Vasily Sviridov
