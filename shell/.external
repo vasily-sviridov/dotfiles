@@ -1,0 +1,7 @@
+#!/usr/bin/env zsh
+
+# === Zoxide ===
+
+eval "$(zoxide init zsh)"
+
+# --- End Zoxide ---

@@ -1,0 +1,56 @@
+# === Path modifications ===
+
+PATH="$HOME/.local/bin:$PATH"
+
+# --- End Path modifications ---
+
+
+# === General ===
+
+export EDITOR="$(which nvim)"
+
+# Docker:
+export DOCKER_CLI_HINTS=false  # disable ads in CLI :(
+
+# Pagers:
+# This affects every invocation of `less`.
+#
+#   -i       smart case-insensitive search
+#   -R       color
+#   -F       exit if there is less than one page of content
+#   -X       keep content on screen after exit
+#   -M       show more info at the bottom prompt line
+#   -x4      tabs are 4 instead of 8
+export LESS='-iRXFMx4 --mouse --wheel-lines=3'
+export PAGER='less'
+
+# I don't use `bat` here, because I don't like the highlight.
+# sh -c 'col -b | bat -l man -p'
+export MANPAGER='less'
+
+# --- End General ===
+
+
+# === Version managers ===
+
+# rustup:
+source "$HOME/.cargo/env"
+
+# --- End Version managers ---
+
+
+# === Code highlight ===
+# https://github.com/zsh-users/zsh-syntax-highlighting
+
+# We won't highlight code longer than 200 chars, because it is slow:
+export ZSH_HIGHLIGHT_MAXLENGTH=200
+
+# --- End Code highlight ---
+
+
+# === PATH ===
+
+# This should be the last line:
+export PATH
+
+# --- End PATH ---

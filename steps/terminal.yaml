@@ -1,0 +1,30 @@
+- defaults:
+    link:
+      relink: true
+
+- clean: ['~']
+
+# See https://ohmyz.sh
+- shell:
+  - command: |
+      sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
+    description: Install Oh-My-Zsh
+    stdout: true
+    stderr: true
+  - command: |
+      zsh -c "$(curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh)" || true
+    description: Install zplug
+    stdout: true
+    stderr: true
+
+- link:
+    ~/.shell:
+      path: shell
+      create: true
+    ~/.zshrc:
+      path: config/zshrc
+      force: true
+    ~/.zplugrc: config/zplugrc
+    ~/.editorconfig: config/editorconfig
+    ~/.gitconfig: config/gitconfig
+    ~/.gitattributes_global: config/gitattributes

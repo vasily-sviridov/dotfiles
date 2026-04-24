@@ -1,0 +1,29 @@
+#!/usr/bin/env zsh
+
+# === Aliases ===
+
+# List files using eza with icons always enabled:
+alias ls="eza --icons=always"
+
+# Long listing including hidden files:
+alias la='ls -la'
+
+# Long listing format:
+alias ll='ls -l'
+
+# Long listing sorted by modification time (oldest first):
+alias ltr='ls -ltr'
+
+# Use xh (friendly HTTP client) instead of curl/httpie:
+alias http="xh"
+
+# Ripgrep case-insensitive without headings:
+alias g='rg -i --no-heading'
+
+# Show largest items in current directory (human-readable, top 10):
+alias dsz='du -s `pwd`/* | sort -nr | cut -f 2- | while read a; do du -sh "$a"; done|head'
+
+# Same as dsz, but with sudo for restricted directories:
+alias dszr='sudo du -s `pwd`/* 2>/dev/null| sort -nr | cut -f 2- | while read a; do sudo du -sh "$a" 2>/dev/null; done|head'
+
+# --- End Aliases ---

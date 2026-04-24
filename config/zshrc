@@ -1,0 +1,33 @@
+export ZSH="$HOME/.oh-my-zsh"
+
+CASE_SENSITIVE='false'
+
+HYPHEN_INSENSITIVE='false'
+
+HIST_STAMPS='yyyy-mm-dd'
+
+ZSH_THEME="robbyrussell"
+
+plugins=(
+  gitfast
+)
+
+source "$ZSH/oh-my-zsh.sh"
+
+# === Plugin management ===
+
+ZPLUG_HOME="$HOME/.zplug"
+export ZPLUG_HOME
+source "$HOME/.zplugrc"
+
+# --- End Plugin managment ---
+
+
+# === Shell parts ===
+
+source "$HOME/.shell/.std"  # should be the first one
+source "$HOME/.shell/.aliases"
+source "$HOME/.shell/.exports"
+source "$HOME/.shell/.external"
+
+# --- End Shall parts ---
