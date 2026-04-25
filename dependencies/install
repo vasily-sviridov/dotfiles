@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -Eeuo pipefail
+
+ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+source "$ROOT_DIR/lib/common.sh"
+source "$ROOT_DIR/lib/ubuntu.sh"
+source "$ROOT_DIR/lib/macos.sh"
+source "$ROOT_DIR/lib/rust.sh"
+source "$ROOT_DIR/lib/nvm.sh"
+source "$ROOT_DIR/lib/go.sh"
+
+
+main() {
+  detect_platform
+
+  case "$PLATFORM" in
+    ubuntu) install_ubuntu ;;
+    macos)  install_macos ;;
+  esac
+
+  install_rust
+  install_nvm
+  install_golang
+
+  success "Done 🎉"
+}
+
+main "$@"

@@ -4,8 +4,12 @@
 
 - clean: ['~']
 
-# See https://ohmyz.sh
 - shell:
+  - command: |
+      ./dependencies/install
+    description: install common dependencies
+    stdout: true
+    stderr: true
   - command: |
       sh -c "$(curl -fsSL https://raw.github.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" || true
     description: Install Oh-My-Zsh
@@ -20,6 +24,9 @@
 - link:
     ~/.shell:
       path: shell
+      create: true
+    ~/.config/nvim:
+      path: nvim
       create: true
     ~/.zshrc:
       path: config/zshrc
