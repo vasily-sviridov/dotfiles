@@ -4,4 +4,7 @@
 local bind = vim.keymap.set
 local opts = { silent = true, noremap = true }
 
-
+bind("n", "<C-Left>",  "<C-w>h", opts)
+bind("n", "<C-Down>",  "<C-w>j", opts)
+bind("n", "<C-Up>",    "<C-w>k", opts)
+bind("n", "<C-Right>", "<C-w>l", opts)
