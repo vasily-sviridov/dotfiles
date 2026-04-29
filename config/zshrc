@@ -30,4 +30,8 @@ source "$HOME/.shell/.aliases"
 source "$HOME/.shell/.exports"
 source "$HOME/.shell/.external"
 
+if grep -qi microsoft /proc/version 2>/dev/null; then
+    source "$HOME/.shell/.wsl"
+fi
+
 # --- End Shall parts ---

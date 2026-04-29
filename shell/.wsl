@@ -1,0 +1,4 @@
+#!/usr/bin/env zsh
+
+export XDG_RUNTIME_DIR=/mnt/wslg/runtime-dir
+export WAYLAND_DISPLAY=wayland-0
