@@ -2,6 +2,9 @@
 
 # `.std` provides customization for standard features.
 
+is_wsl() {
+    grep -qi microsoft /proc/version 2>/dev/null
+}
 
 # === Colorize stderr ===
 # Taken from https://github.com/fniessen/shell-leuven
