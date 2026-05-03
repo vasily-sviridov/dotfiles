@@ -2,6 +2,9 @@
 
 # === Aliases ===
 
+# Use zoxide instead of cd
+alias cd="z"
+
 # List files using eza with icons always enabled:
 alias ls="eza --icons=always"
 
