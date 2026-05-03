@@ -6,6 +6,9 @@ PATH="$HOME/.local/bin:$PATH"
 export PATH="$HOME/.local/go/current/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
 
+# opencode
+export PATH=/home/vasily-sviridov/.opencode/bin:$PATH
+
 # --- End Path modifications ---
 
 
