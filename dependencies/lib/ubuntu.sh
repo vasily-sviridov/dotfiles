@@ -14,6 +14,7 @@ install_ubuntu() {
     fzf
     neovim
     tmux
+    unzip
     zsh
   )
 
