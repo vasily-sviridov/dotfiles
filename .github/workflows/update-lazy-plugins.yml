@@ -63,3 +63,5 @@ jobs:
           body: "Automated plugin updates via lazy.nvim"
           branch: "update/lazy-plugins"
           delete-branch: true
+          reviewers: "vasily-sviridov"
+          labels: "dependencies"
