@@ -37,7 +37,7 @@ jobs:
 
           cp "$XDG_CONFIG_HOME/nvim/lazy-lock.json" nvim/lazy-lock.json
 
-          rm -rf .ci-config .ci-data
+          rm -rf $XDG_CONFIG_HOME $XDG_CONFIG_HOME
 
           git diff --exit-code lazy-lock.json || echo "CHANGES=true" >> $GITHUB_ENV
 
