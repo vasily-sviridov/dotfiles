@@ -30,16 +30,29 @@ jobs:
 
           cp -r nvim/* "$XDG_CONFIG_HOME/nvim/"
 
-          nvim --headless -u "$XDG_CONFIG_HOME/nvim/init.lua" \
-            -c "Lazy! sync" \
-            -c "sleep 20" \
-            -c "qa" || true
+          nvim --headless \
+            -u "$XDG_CONFIG_HOME/nvim/init.lua" \
+            -c "lua require('lazy').sync({ wait = true })" \
+            -c "qa!" 2>&1 | tee /tmp/lazy-update.log || true
 
-          cp "$XDG_CONFIG_HOME/nvim/lazy-lock.json" nvim/lazy-lock.json
+          cat /tmp/lazy-update.log
 
-          rm -rf $XDG_CONFIG_HOME $XDG_CONFIG_HOME
+          LOCKFILE="$XDG_CONFIG_HOME/nvim/lazy-lock.json"
+          if [ ! -f "$LOCKFILE" ]; then
+            LOCKFILE="$XDG_DATA_HOME/nvim/lazy/lazy-lock.json"
+          fi
 
-          git diff --exit-code lazy-lock.json || echo "CHANGES=true" >> $GITHUB_ENV
+          if [ -f "$LOCKFILE" ]; then
+            cp "$LOCKFILE" nvim/lazy-lock.json
+          else
+            echo "ERROR: lazy-lock.json not found"
+            find "$XDG_CONFIG_HOME" "$XDG_DATA_HOME" -name "lazy-lock.json" 2>/dev/null
+            exit 1
+          fi
+
+          rm -rf "$XDG_CONFIG_HOME" "$XDG_DATA_HOME"
+
+          git diff --exit-code nvim/lazy-lock.json || echo "CHANGES=true" >> "$GITHUB_ENV"
 
       - name: Create Pull Request
         if: env.CHANGES == 'true'
@@ -49,3 +62,4 @@ jobs:
           title: "chore: update lazy.nvim plugins"
           body: "Automated plugin updates via lazy.nvim"
           branch: "update/lazy-plugins"
+          delete-branch: true
