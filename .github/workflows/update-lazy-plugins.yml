@@ -5,6 +5,10 @@ on:
     - cron: "0 2 * * *"
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   update:
     runs-on: ubuntu-latest
@@ -32,6 +36,8 @@ jobs:
             -c "qa" || true
 
           cp "$XDG_CONFIG_HOME/nvim/lazy-lock.json" nvim/lazy-lock.json
+
+          rm -rf .ci-config .ci-data
 
           git diff --exit-code lazy-lock.json || echo "CHANGES=true" >> $GITHUB_ENV
 
