@@ -1,0 +1,45 @@
+name: Update lazy.nvim plugins
+
+on:
+  schedule:
+    - cron: "0 2 * * *"
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          fetch-depth: 0
+
+      - uses: rhysd/action-setup-vim@v1
+        with:
+          neovim: true
+          version: nightly
+
+      - name: Update plugins
+        run: |
+          export XDG_CONFIG_HOME="$PWD/.ci-config"
+          export XDG_DATA_HOME="$PWD/.ci-data"
+          mkdir -p "$XDG_CONFIG_HOME/nvim"
+
+          cp -r nvim/* "$XDG_CONFIG_HOME/nvim/"
+
+          nvim --headless -u "$XDG_CONFIG_HOME/nvim/init.lua" \
+            -c "Lazy! sync" \
+            -c "sleep 20" \
+            -c "qa" || true
+
+          cp "$XDG_CONFIG_HOME/nvim/lazy-lock.json" nvim/lazy-lock.json
+
+          git diff --exit-code lazy-lock.json || echo "CHANGES=true" >> $GITHUB_ENV
+
+      - name: Create Pull Request
+        if: env.CHANGES == 'true'
+        uses: peter-evans/create-pull-request@v8
+        with:
+          commit-message: "chore: update lazy.nvim plugins"
+          title: "chore: update lazy.nvim plugins"
+          body: "Automated plugin updates via lazy.nvim"
+          branch: "update/lazy-plugins"
