@@ -9,7 +9,7 @@ source "$ROOT_DIR/lib/macos.sh"
 source "$ROOT_DIR/lib/rust.sh"
 source "$ROOT_DIR/lib/nvm.sh"
 source "$ROOT_DIR/lib/go.sh"
-
+source "$ROOT_DIR/lib/uv.sh"
 
 main() {
   detect_platform
@@ -22,6 +22,7 @@ main() {
   install_rust
   install_nvm
   install_golang
+  install_uv
 
   success "Done 🎉"
 }

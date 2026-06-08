@@ -1,7 +1,8 @@
 source "$ZPLUG_HOME/init.zsh"
 
 zplug "zsh-users/zsh-autosuggestions"
-
+zplug "g-plane/zsh-yarn-autocompletions", hook-build:"./zplug.zsh", defer:2
+zplug "lipov3cz3k/zsh-uv"
 
 # Install plugins if there are plugins that have not been installed:
 if ! zplug check; then

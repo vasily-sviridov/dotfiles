@@ -13,6 +13,8 @@ install_ubuntu() {
     jq
     fzf
     neovim
+    python3
+    python3-venv
     tmux
     unzip
     zsh
