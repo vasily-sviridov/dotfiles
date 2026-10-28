@@ -2,6 +2,8 @@
 
 # === Aliases ===
 
+alias nv="noko-vsc"
+
 # Use zoxide instead of cd
 alias cd="z"
 

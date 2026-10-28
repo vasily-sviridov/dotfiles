@@ -1,7 +1,78 @@
 #!/usr/bin/env zsh
 
-# === Zoxide ===
+# Vite+ bin (https://viteplus.dev)
+. "$HOME/.config/vite-plus/env"
 
+# Zoxide
 eval "$(zoxide init zsh)"
 
-# --- End Zoxide ---
+uv-pub() {
+    if [[ -z "$GITLAB_TOKEN" ]]; then
+      echo "GITLAB_TOKEN is not set" >&2
+      return 1
+    fi
+
+    local project_id
+    project_id="$(glab repo view --output json --jq '.id')" || return
+
+    command uv publish \
+      --publish-url "https://gitlab.com/api/v4/projects/${project_id}/packages/pypi" \
+      --username vasily-sviridov \
+      --password "$GITLAB_TOKEN" \
+      "$@"
+}
+
+pnpm-pub() {
+    if [[ -z "$GITLAB_TOKEN" ]]; then
+      echo "GITLAB_TOKEN is not set" >&2
+      return 1
+    fi
+
+    local project_id registry package_name package_scope temp_dir npmrc
+    local -a tarballs
+
+    project_id="$(glab repo view --output json --jq '.id')" || return
+    registry="https://gitlab.com/api/v4/projects/${project_id}/packages/npm/"
+
+    package_name="$(node -p "require('./package.json').name")" || return
+    package_scope="${package_name%%/*}"
+
+    temp_dir="$(mktemp -d /tmp/pnpm-pub.XXXXXX)" || return
+    npmrc="${temp_dir}/npmrc"
+
+    {
+      command pnpm pack --pack-destination "$temp_dir" || return
+
+      tarballs=("$temp_dir"/*.tgz(N))
+
+      if (( ${#tarballs[@]} != 1 )); then
+        echo "Expected one package tarball, found ${#tarballs[@]}" >&2
+        return 1
+      fi
+
+      {
+        print -r -- "registry=${registry}"
+
+        if [[ "$package_scope" == @* ]]; then
+          print -r -- "${package_scope}:registry=${registry}"
+        fi
+
+        print -r -- \
+          "//gitlab.com/api/v4/projects/${project_id}/packages/npm/:_authToken=\${GITLAB_TOKEN}"
+      } > "$npmrc"
+
+      chmod 600 "$npmrc"
+
+      (
+        cd "$temp_dir" || exit
+        NPM_CONFIG_USERCONFIG="$npmrc" \
+          command npm publish \
+            "${tarballs[1]}" \
+            --registry "$registry" \
+            --ignore-scripts \
+            "$@"
+      )
+    } always {
+      command rm -rf -- "$temp_dir"
+    }
+}
