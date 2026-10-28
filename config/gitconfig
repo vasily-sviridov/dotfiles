@@ -27,6 +27,7 @@
   # use n and N to move between diff sections
   navigate = true
   inspect-raw-lines = false
+  dark = true
   line-numbers = true
 
   # decorations

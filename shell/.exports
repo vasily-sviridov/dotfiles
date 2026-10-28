@@ -2,16 +2,26 @@
 
 PATH="$HOME/.local/bin:$PATH"
 
+# NVIM
+
+export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
+
+# zerobrew
+export PATH="$HOME/.zerobrew/bin:$PATH"
+
 # golang
 export PATH="$HOME/.local/go/current/bin:$PATH"
 export PATH="$HOME/go/bin:$PATH"
 
 # opencode
-export PATH=/home/vasily-sviridov/.opencode/bin:$PATH
+export PATH="$HOME/.opencode/bin:$PATH"
 
 # bun
 export BUN_INSTALL="$HOME/.bun"
 export PATH="$BUN_INSTALL/bin:$PATH"
+
+# mimocode
+export PATH="$HOME/.mimocode/bin:$PATH"
 
 # --- End Path modifications ---
 
@@ -39,10 +49,21 @@ export PAGER='less'
 # sh -c 'col -b | bat -l man -p'
 export MANPAGER='less'
 
-# --- End General ===
+# === End General ===
 
 
 # === Version managers ===
+
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+case ":$PATH:" in
+  *":$PNPM_HOME/bin:"*) ;;
+  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
+esac
+
+# sdkman
+export SDKMAN_DIR="$HOME/.sdkman"
+[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # nvm:
 export NVM_DIR="$HOME/.nvm"

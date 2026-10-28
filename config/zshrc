@@ -12,6 +12,8 @@ plugins=(
   gitfast
 )
 
+fpath+=~/.zfunc
+
 source "$ZSH/oh-my-zsh.sh"
 
 # === Plugin management ===
