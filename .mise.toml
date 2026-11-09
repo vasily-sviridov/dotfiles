@@ -1,0 +1,14 @@
+# mise configuration — pinned tool versions.
+# Replaces nvm (node), sdkman (java), manual go tarballs, and rustup.
+# Run `mise install` to install all pinned tools, then `mise activate`
+# in your shell to use mise shims.
+
+[tools]
+node = "lts"
+go = "1.27.3"
+python = "3.14"
+rust = "stable"
+java = "21"
+
+# clang-22 is provided by the system package (apt llvm.sh / brew llvm),
+# not by mise, per the migration plan.

@@ -7,27 +7,13 @@ set -e
 SHELL='/bin/bash'
 export SHELL
 
-# Standard dotbot pre-configuration:
-
-readonly DOTBOT_DIR='dotbot'
-readonly DOTBOT_BIN='bin/dotbot'
-readonly BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-readonly ARGS="$@"
+BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cd "$BASEDIR"
-git submodule sync --quiet --recursive
-git submodule update --init --recursive
 
-# Linking dotfiles:
+# Ensure submodules (e.g. dotbot, nvim plugins) are present.
+git submodule sync --quiet --recursive 2>/dev/null || true
+git submodule update --init --recursive 2>/dev/null || true
 
-run_dotbot () {
-  local config
-  config="$1"
-
-  "$BASEDIR/$DOTBOT_DIR/$DOTBOT_BIN" \
-    -d "$BASEDIR" \
-    -c "$config" $ARGS
-}
-
-run_dotbot 'steps/terminal.yaml' || true
+# Thin entrypoint: delegate to the shared bootstrap.
+run ./dependencies/bootstrap.sh "$@"

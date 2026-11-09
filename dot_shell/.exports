@@ -9,10 +9,6 @@ export PATH="$PATH:/opt/nvim-linux-x86_64/bin"
 # zerobrew
 export PATH="$HOME/.zerobrew/bin:$PATH"
 
-# golang
-export PATH="$HOME/.local/go/current/bin:$PATH"
-export PATH="$HOME/go/bin:$PATH"
-
 # opencode
 export PATH="$HOME/.opencode/bin:$PATH"
 
@@ -23,6 +19,9 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # mimocode
 export PATH="$HOME/.mimocode/bin:$PATH"
 
+# mise (replaces nvm/sdkman/golang/rustup version managers)
+eval "$(mise activate zsh)"
+
 # --- End Path modifications ---
 
 
@@ -31,7 +30,7 @@ export PATH="$HOME/.mimocode/bin:$PATH"
 export EDITOR="$(which nvim)"
 
 # Docker:
-export DOCKER_CLI_HINTS=false  # disable ads in CLI :(
+export DOCKER_CLI_HINTS=false  # disable ads in CLI :)
 
 # Pagers:
 # This affects every invocation of `less`.
@@ -50,39 +49,6 @@ export PAGER='less'
 export MANPAGER='less'
 
 # === End General ===
-
-
-# === Version managers ===
-
-# pnpm
-export PNPM_HOME="$HOME/.local/share/pnpm"
-case ":$PATH:" in
-  *":$PNPM_HOME/bin:"*) ;;
-  *) export PATH="$PNPM_HOME/bin:$PATH" ;;
-esac
-
-# sdkman
-export SDKMAN_DIR="$HOME/.sdkman"
-[[ -s "$HOME/.sdkman/bin/sdkman-init.sh" ]] && source "$HOME/.sdkman/bin/sdkman-init.sh"
-
-# nvm:
-export NVM_DIR="$HOME/.nvm"
-[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # Load NVM
-[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # Load NVM bash completion
-
-# rustup:
-source "$HOME/.cargo/env"
-
-# --- End Version managers ---
-
-
-# === Code highlight ===
-# https://github.com/zsh-users/zsh-syntax-highlighting
-
-# We won't highlight code longer than 200 chars, because it is slow:
-export ZSH_HIGHLIGHT_MAXLENGTH=200
-
-# --- End Code highlight ---
 
 
 # === PATH ===

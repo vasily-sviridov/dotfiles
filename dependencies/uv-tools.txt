@@ -1,0 +1,4 @@
+# Python CLI tools installed via `uv tool install` from dependencies/bootstrap.sh.
+# One tool per line. Comments are allowed.
+ruff
+black

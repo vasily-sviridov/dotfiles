@@ -1,0 +1,19 @@
+# chezmoi ignore patterns.
+#
+# Only the chezmoi source files (dot_* entries and dot_config/chezmoi)
+# are applied to the home directory. Everything else in the repo
+# (build tooling, CI, nvim config, git internals) is ignored so it does
+# not get copied into $HOME.
+
+.git/
+.github/
+.agent-plans/
+dependencies/
+dotbot/
+steps/
+install
+README.md
+LICENSE
+.gitignore
+.gitmodules
+nvim/
