@@ -32,6 +32,8 @@ install_mise() {
   fi
   log "Installing mise"
   run curl https://mise.run | sh
+  # mise.run installs to $HOME/.local/bin/mise; make it available in this shell
+  export PATH="$HOME/.local/bin:$PATH"
 }
 
 activate_mise() {
@@ -45,7 +47,9 @@ activate_mise() {
 
 install_mise_tools() {
   log "Installing pinned mise toolchains (see .mise.toml)"
-  run mise install
+  # mise exits non-zero if any single tool fails, even when others installed fine.
+  # Warn but continue so chezmoi and the rest of bootstrap still run.
+  run mise install || warn "mise install completed with failures (some tools may be missing)"
 }
 
 # ---------------------------------------------------------------------------
@@ -58,7 +62,9 @@ install_chezmoi() {
     return
   fi
   log "Installing chezmoi"
-  run sh -c "$(curl -fsSL https://get.chezmoi.io)"
+  # Install into $HOME/.local/bin and make it available in this shell.
+  export PATH="$HOME/.local/bin:$PATH"
+  BINDIR="$HOME/.local/bin" sh -c "$(curl -fsSL https://get.chezmoi.io)"
 }
 
 setup_chezmoi() {
@@ -83,7 +89,9 @@ install_ubuntu_packages() {
   # clang-22 (system, not managed by mise)
   if ! has clang-22; then
     log "Installing clang-22 via apt.llvm.org"
-    run wget -qO- https://apt.llvm.org/llvm.sh | sudo bash -s -- 22 all
+    # llvm.sh may not support brand-new Ubuntu versions; warn but continue.
+    run wget -qO- https://apt.llvm.org/llvm.sh | sudo bash -s -- 22 all \
+      || warn "clang-22 installation skipped (distro not supported by llvm.sh)"
   fi
 }
 
@@ -158,7 +166,9 @@ install_uv_tools() {
   install_uv
 
   # shellcheck disable=SC2046
-  run uv tool install $(grep -vE '^\s*(#|$)' "$tools_file" | tr '\n' ' ')
+  grep -vE '^\s*(#|$)' "$tools_file" | tr '\n' ' ' | while read -r tool; do
+    run uv tool install "$tool"
+  done
 }
 
 # ---------------------------------------------------------------------------
@@ -168,16 +178,19 @@ install_uv_tools() {
 main() {
   install_mise
   activate_mise
-  install_mise_tools
 
-  install_chezmoi
-  setup_chezmoi
-
+  # System packages first: mise-installed node needs libatomic1,
+  # rust/cargo needs a C compiler (build-essential / llvm).
   case "$(uname -s)" in
     Linux) install_ubuntu_packages ;;
     Darwin) install_macos_packages ;;
     *) die "Unsupported OS" ;;
   esac
+
+  install_mise_tools
+
+  install_chezmoi
+  setup_chezmoi
 
   install_crates
   install_uv_tools

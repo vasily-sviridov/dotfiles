@@ -14,9 +14,9 @@ else
   RESET=""
 fi
 
-log() { echo "${BLUE}==>${RESET} $*"; }
-success() { echo "${GREEN}✔${RESET} $*"; }
-warn() { echo "${YELLOW}⚠${RESET} $*"; }
+log() { echo "${BLUE}==>${RESET} $*" >&2; }
+success() { echo "${GREEN}✔${RESET} $*" >&2; }
+warn() { echo "${YELLOW}⚠${RESET} $*" >&2; }
 die() { echo "${RED}✖${RESET} $*" >&2; exit 1; }
 
 trap 'die "Failed at line $LINENO"' ERR

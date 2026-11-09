@@ -1,0 +1,48 @@
+name: E2E (mise + chezmoi migration)
+
+on:
+  push:
+    paths:
+      - 'install'
+      - 'dependencies/**'
+      - '.mise.toml'
+      - 'dot_config/chezmoi/**'
+      - 'dot_*'
+      - 'dot_shell/**'
+      - 'dot_zshrc'
+      - '.github/workflows/e2e.yml'
+      - 'test/e2e/**'
+  pull_request:
+    paths:
+      - 'install'
+      - 'dependencies/**'
+      - '.mise.toml'
+      - 'dot_config/chezmoi/**'
+      - 'dot_*'
+      - 'dot_shell/**'
+      - 'dot_zshrc'
+      - '.github/workflows/e2e.yml'
+      - 'test/e2e/**'
+
+jobs:
+  e2e:
+    runs-on: ubuntu-latest
+    container:
+      image: ubuntu:26.10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install base tools
+        run: |
+          apt-get update && apt-get install -y --no-install-recommends \
+            sudo curl wget ca-certificates git bash zsh xz-utils tar gnupg
+
+      - name: Build Docker test image
+        run: |
+          docker build -t dotfiles-e2e -f test/e2e/Dockerfile .
+
+      - name: Run E2E test
+        run: |
+          docker run --rm -v "$(pwd)/test/e2e/run-e2e.sh:/dotfiles/test/e2e/run-e2e.sh:ro" \
+            dotfiles-e2e bash /dotfiles/test/e2e/run-e2e.sh
