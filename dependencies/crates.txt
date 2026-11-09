@@ -1,0 +1,16 @@
+# Rust binaries installed via cargo-binstall from dependencies/bootstrap.sh.
+# One crate per line. Comments are allowed.
+bat
+eza
+ripgrep
+zoxide
+xh
+git-delta
+cargo-update
+du-dust
+broot
+bore-cli
+fd-find
+tokei
+prek
+gitlogue

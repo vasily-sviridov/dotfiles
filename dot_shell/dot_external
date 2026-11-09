@@ -32,6 +32,7 @@ pnpm-pub() {
     local -a tarballs
 
     project_id="$(glab repo view --output json --jq '.id')" || return
+
     registry="https://gitlab.com/api/v4/projects/${project_id}/packages/npm/"
 
     package_name="$(node -p "require('./package.json').name")" || return

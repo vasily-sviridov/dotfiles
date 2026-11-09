@@ -1,0 +1,25 @@
+# APT packages installed by dependencies/bootstrap.sh (ubuntu).
+# One package per line. Comments are allowed.
+build-essential
+cmake
+ninja-build
+git
+curl
+wget
+jq
+fzf
+neovim
+python3
+python3-venv
+tmux
+unzip
+zsh
+# libatomic1 required by node (mise-installed node binaries link against it)
+libatomic1
+# lsb-release required by apt.llvm.org/llvm.sh (clang-22 installer)
+lsb-release
+# add-apt-repository required by apt.llvm.org/llvm.sh (clang-22 installer)
+software-properties-common
+gnupg
+# openssl required by pnpm and various build tools
+openssl

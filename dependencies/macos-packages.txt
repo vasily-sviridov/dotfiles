@@ -1,0 +1,15 @@
+# Homebrew packages installed by dependencies/bootstrap.sh (macos).
+# One package per line. Comments are allowed.
+cmake
+ninja
+git
+curl
+wget
+jq
+fzf
+neovim
+tmux
+zsh
+llvm
+# openssl required by pnpm and various build tools
+openssl

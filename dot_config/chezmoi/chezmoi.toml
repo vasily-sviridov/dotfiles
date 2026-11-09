@@ -1,0 +1,8 @@
+# chezmoi client configuration.
+#
+# sourceDir is intentionally not set — chezmoi defaults to
+# ~/.local/share/chezmoi. To sync changes from this repo, run:
+#
+#   chezmoi init --apply /path/to/this/repo
+#
+# Per-machine secret encryption (age/pgp) is deferred to a later epoch.
