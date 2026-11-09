@@ -1,0 +1,17 @@
+#!/usr/bin/env zsh
+
+# `.std` provides customization for standard features.
+
+is_wsl() {
+    grep -qi microsoft /proc/version 2>/dev/null
+}
+
+is_ubuntu() {
+    [[ -f /etc/os-release ]] &&
+        grep -qi "^ID=ubuntu$" /etc/os-release &&
+        ! is_wsl
+}
+
+is_macos() {
+    [[ "$(uname -s)" == "Darwin" ]]
+}
