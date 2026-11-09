@@ -182,6 +182,37 @@ install_uv_tools() {
 }
 
 # ---------------------------------------------------------------------------
+# zerobrew
+# ---------------------------------------------------------------------------
+
+install_zerobrew() {
+  if has zerobrew; then
+    success "zerobrew already installed: $(zerobrew --version)"
+    return
+  fi
+  log "Installing zerobrew"
+  # zerobrew installs to ~/.zerobrew/bin
+  retry 3 sh -c 'curl -fsSL https://github.com/zerobrewhq/zerobrew/releases/latest/download/zerobrew-$(uname -s)-$(uname -m).tar.gz | tar xz -C "$HOME/.zerobrew/bin"' \
+    || die "zerobrew installation failed after retries"
+  export PATH="$HOME/.zerobrew/bin:$PATH"
+  if ! has zerobrew; then
+    die "zerobrew is not available on PATH"
+  fi
+}
+
+install_zerobrew_packages() {
+  local packages=(
+    kubernetes-cli
+    fluxcd
+  )
+
+  for pkg in "${packages[@]}"; do
+    log "Installing zerobrew package: $pkg"
+    retry 3 zerobrew install "$pkg" || warn "zerobrew install $pkg failed after retries"
+  done
+}
+
+# ---------------------------------------------------------------------------
 # main
 # ---------------------------------------------------------------------------
 
@@ -204,6 +235,9 @@ main() {
 
   install_crates
   install_uv_tools
+
+  install_zerobrew
+  install_zerobrew_packages
 
   success "Bootstrap done 🎉"
 }
