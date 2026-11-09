@@ -104,13 +104,21 @@ else
   echo "clang-22: (not available — environment-dependent, soft check)"
 fi
 
-EXPECTED="node lts go 1.27.3 python 3.14 rust stable java 21"
 ACTUAL=$(mise current 2>/dev/null || true)
-# Just verify each tool is installed by mise (any version); exact pinning is
-# in .mise.toml and already enforced by mise install.
-for tool in node go python rust java; do
-  if echo "$ACTUAL" | grep -q "^$tool "; then
-    echo "OK   $tool $(echo "$ACTUAL" | grep "^$tool " | head -1 | awk '{print $2}')"
+for pair in node:lts go:1.27.3 python:3.14 rust:stable java:21; do
+  tool="${pair%%:*}"
+  ver="${pair##*:}"
+  actual_line=$(echo "$ACTUAL" | grep "^$tool " || true)
+  if [ -n "$actual_line" ]; then
+    actual_ver=$(echo "$actual_line" | awk '{print $2}')
+    if [ "$tool" = "node" ]; then
+      # node lts resolves to a concrete version; just verify it is installed
+      echo "OK   $tool $actual_ver"
+    elif echo "$actual_ver" | grep -q "^$ver"; then
+      echo "OK   $tool $actual_ver"
+    else
+      fail "mise: expected $tool=$ver, got: $actual_line"
+    fi
   else
     fail "mise: $tool not installed"
   fi
