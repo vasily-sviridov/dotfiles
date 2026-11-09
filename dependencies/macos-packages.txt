@@ -11,3 +11,5 @@ neovim
 tmux
 zsh
 llvm
+# openssl required by pnpm and various build tools
+openssl
