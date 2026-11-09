@@ -30,6 +30,27 @@ run() {
   "$@"
 }
 
+# retry: run a command with quadratic backoff (1s, 4s, 9s, ...)
+# Usage: retry <max_attempts> <command> [args...]
+retry() {
+  local max_attempts="$1"
+  shift
+  local attempt=0
+  while [[ $attempt -lt $max_attempts ]]; do
+    attempt=$((attempt + 1))
+    if "$@"; then
+      return 0
+    fi
+    if [[ $attempt -ge $max_attempts ]]; then
+      return 1
+    fi
+    local delay=$((attempt * attempt))
+    warn "Attempt $attempt/$max_attempts failed, retrying in ${delay}s..."
+    sleep "$delay"
+  done
+  return 1
+}
+
 detect_platform() {
   case "$(uname -s)" in
     Linux) PLATFORM="ubuntu" ;;

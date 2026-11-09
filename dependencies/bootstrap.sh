@@ -31,16 +31,9 @@ install_mise() {
     return
   fi
   log "Installing mise"
-  # mise.run can flake (504 etc.); retry up to 3 times before giving up.
-  for i in 1 2 3; do
-    if curl -fsSL --retry 3 https://mise.run | sh; then
-      break
-    fi
-    warn "mise install attempt $i failed, retrying..."
-    sleep 5
-  done
   # mise.run installs to $HOME/.local/bin/mise; make it available in this shell
   export PATH="$HOME/.local/bin:$PATH"
+  retry 3 sh -c 'curl -fsSL --retry 3 https://mise.run | sh'
   if ! has mise; then
     die "mise installation failed after retries"
   fi
@@ -57,20 +50,8 @@ activate_mise() {
 
 install_mise_tools() {
   log "Installing pinned mise toolchains (see .mise.toml)"
-  # mise exits non-zero if any single tool fails, even when others installed fine.
   # GitHub can flake (504) on individual tool downloads; retry the whole set.
-  local ok=0
-  for i in 1 2 3; do
-    if mise install; then
-      ok=1
-      break
-    fi
-    warn "mise install attempt $i failed, retrying..."
-    sleep 10
-  done
-  if [ "$ok" != "1" ]; then
-    die "mise install failed after retries"
-  fi
+  retry 3 mise install || die "mise install failed after retries"
 }
 
 # ---------------------------------------------------------------------------
@@ -85,14 +66,7 @@ install_chezmoi() {
   log "Installing chezmoi"
   # Install into $HOME/.local/bin and make it available in this shell.
   export PATH="$HOME/.local/bin:$PATH"
-  # get.chezmoi.io can flake (504); retry up to 3 times.
-  for i in 1 2 3; do
-    if BINDIR="$HOME/.local/bin" sh -c "$(curl -fsSL --retry 3 https://get.chezmoi.io)"; then
-      break
-    fi
-    warn "chezmoi install attempt $i failed, retrying..."
-    sleep 5
-  done
+  retry 3 sh -c 'BINDIR="$HOME/.local/bin" sh -c "$(curl -fsSL --retry 3 https://get.chezmoi.io)"'
   if ! has chezmoi; then
     die "chezmoi installation failed after retries"
   fi
@@ -100,7 +74,7 @@ install_chezmoi() {
 
 setup_chezmoi() {
   log "Applying dotfiles with chezmoi (source: $REPO_DIR)"
-  run chezmoi init --apply "$REPO_DIR"
+  retry 3 chezmoi init --apply "$REPO_DIR" || die "chezmoi apply failed after retries"
 }
 
 # ---------------------------------------------------------------------------
@@ -157,7 +131,7 @@ install_cargo_binstall() {
   fi
 
   log "Installing cargo-binstall"
-  run cargo install cargo-binstall
+  retry 3 cargo install cargo-binstall || die "cargo-binstall installation failed after retries"
 }
 
 install_crates() {
@@ -171,7 +145,7 @@ install_crates() {
 
   log "Installing cargo-binstall crates"
   # shellcheck disable=SC2046
-  run cargo binstall -y $(grep -vE '^\s*(#|$)' "$crates_file" | tr '\n' ' ')
+  retry 3 cargo binstall -y $(grep -vE '^\s*(#|$)' "$crates_file" | tr '\n' ' ') || die "cargo-binstall crates installation failed after retries"
 }
 
 # ---------------------------------------------------------------------------
@@ -184,14 +158,7 @@ install_uv() {
     return
   fi
   log "Installing uv"
-  # astral.sh can flake; retry up to 3 times.
-  for i in 1 2 3; do
-    if curl -LsSf --retry 3 https://astral.sh/uv/install.sh | sh; then
-      break
-    fi
-    warn "uv install attempt $i failed, retrying..."
-    sleep 5
-  done
+  retry 3 sh -c 'curl -LsSf --retry 3 https://astral.sh/uv/install.sh | sh'
   if ! has uv; then
     die "uv installation failed after retries"
   fi
@@ -210,7 +177,7 @@ install_uv_tools() {
   while IFS= read -r tool || [ -n "$tool" ]; do
     # skip blank lines and comments
     [[ -z "${tool// }" || "$tool" =~ ^[[:space:]]*# ]] && continue
-    run uv tool install "$tool"
+    retry 3 uv tool install "$tool" || warn "uv tool install $tool failed after retries"
   done < "$tools_file"
 }
 
