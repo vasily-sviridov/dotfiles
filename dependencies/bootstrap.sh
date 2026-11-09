@@ -33,7 +33,7 @@ install_mise() {
   log "Installing mise"
   # mise.run can flake (504 etc.); retry up to 3 times before giving up.
   for i in 1 2 3; do
-    if curl -fsSL https://mise.run | sh; then
+    if curl -fsSL --retry 3 https://mise.run | sh; then
       break
     fi
     warn "mise install attempt $i failed, retrying..."
@@ -58,8 +58,19 @@ activate_mise() {
 install_mise_tools() {
   log "Installing pinned mise toolchains (see .mise.toml)"
   # mise exits non-zero if any single tool fails, even when others installed fine.
-  # Warn but continue so chezmoi and the rest of bootstrap still run.
-  run mise install || warn "mise install completed with failures (some tools may be missing)"
+  # GitHub can flake (504) on individual tool downloads; retry the whole set.
+  local ok=0
+  for i in 1 2 3; do
+    if mise install; then
+      ok=1
+      break
+    fi
+    warn "mise install attempt $i failed, retrying..."
+    sleep 10
+  done
+  if [ "$ok" != "1" ]; then
+    die "mise install failed after retries"
+  fi
 }
 
 # ---------------------------------------------------------------------------
@@ -74,7 +85,17 @@ install_chezmoi() {
   log "Installing chezmoi"
   # Install into $HOME/.local/bin and make it available in this shell.
   export PATH="$HOME/.local/bin:$PATH"
-  BINDIR="$HOME/.local/bin" sh -c "$(curl -fsSL https://get.chezmoi.io)"
+  # get.chezmoi.io can flake (504); retry up to 3 times.
+  for i in 1 2 3; do
+    if BINDIR="$HOME/.local/bin" sh -c "$(curl -fsSL --retry 3 https://get.chezmoi.io)"; then
+      break
+    fi
+    warn "chezmoi install attempt $i failed, retrying..."
+    sleep 5
+  done
+  if ! has chezmoi; then
+    die "chezmoi installation failed after retries"
+  fi
 }
 
 setup_chezmoi() {
@@ -163,7 +184,17 @@ install_uv() {
     return
   fi
   log "Installing uv"
-  run curl -LsSf https://astral.sh/uv/install.sh | sh
+  # astral.sh can flake; retry up to 3 times.
+  for i in 1 2 3; do
+    if curl -LsSf --retry 3 https://astral.sh/uv/install.sh | sh; then
+      break
+    fi
+    warn "uv install attempt $i failed, retrying..."
+    sleep 5
+  done
+  if ! has uv; then
+    die "uv installation failed after retries"
+  fi
 }
 
 install_uv_tools() {
