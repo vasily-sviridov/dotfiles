@@ -11,9 +11,5 @@ BASEDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 cd "$BASEDIR"
 
-# Ensure submodules (e.g. dotbot, nvim plugins) are present.
-git submodule sync --quiet --recursive 2>/dev/null || true
-git submodule update --init --recursive 2>/dev/null || true
-
 # Thin entrypoint: delegate to the shared bootstrap.
 ./dependencies/bootstrap.sh "$@"

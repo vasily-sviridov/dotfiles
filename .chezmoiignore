@@ -9,11 +9,9 @@
 .github/
 .agent-plans/
 dependencies/
-dotbot/
-steps/
 install
 README.md
 LICENSE
 .gitignore
-.gitmodules
 nvim/
+private/
