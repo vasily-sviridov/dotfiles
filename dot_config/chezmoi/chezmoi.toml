@@ -1,9 +1,8 @@
 # chezmoi client configuration.
 #
-# sourceDir is set by `chezmoi init` to ~/.local/share/chezmoi (a copy of
-# this dotfiles repo). This file documents the intent and can be extended
-# with template data or encryption settings in later epochs.
+# sourceDir is the dotfiles repository itself — it is the source of truth.
+# Edit files in this repo and run `chezmoi apply` to apply them to $HOME.
 #
 # Per-machine secret encryption (age/pgp) is deferred to a later epoch.
 
-sourceDir = "~/.local/share/chezmoi"
+sourceDir = "/home/vasily-sviridov/code/dotfiles"
