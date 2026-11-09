@@ -86,9 +86,9 @@ install_ubuntu_packages() {
   if [[ ! -f "$packages_file" ]]; then
     warn "$packages_file not found, skipping apt packages"
   else
-    run sudo apt-get update
+    retry 3 sudo apt-get update
     # shellcheck disable=SC2046
-    run sudo apt-get install -y $(grep -vE '^\s*(#|$)' "$packages_file" | tr '\n' ' ')
+    retry 3 sudo apt-get install -y $(grep -vE '^\s*(#|$)' "$packages_file" | tr '\n' ' ')
   fi
 
   # clang-22 (system, not managed by mise)
@@ -112,7 +112,7 @@ install_macos_packages() {
     warn "$packages_file not found, skipping brew packages"
   else
     # shellcheck disable=SC2046
-    run brew install $(grep -vE '^\s*(#|$)' "$packages_file" | tr '\n' ' ')
+    retry 3 brew install $(grep -vE '^\s*(#|$)' "$packages_file" | tr '\n' ' ')
   fi
 }
 

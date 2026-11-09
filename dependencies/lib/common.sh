@@ -36,6 +36,7 @@ retry() {
   local max_attempts="$1"
   shift
   local attempt=0
+  log "$*"
   while [[ $attempt -lt $max_attempts ]]; do
     attempt=$((attempt + 1))
     if "$@"; then
