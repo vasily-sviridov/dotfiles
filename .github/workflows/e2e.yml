@@ -12,7 +12,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ubuntu-version: [26.04, 26.10]
+        ubuntu-version: ["26.04", "26.10"]
     steps:
       - name: Checkout
         uses: actions/checkout@v4
