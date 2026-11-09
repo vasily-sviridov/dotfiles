@@ -2,13 +2,13 @@
 
 # === Aliases ===
 
-alias nv="noko-vsc"
+command -v noko-vsc >/dev/null 2>&1 && alias nv="noko-vsc"
 
 # Use zoxide instead of cd
-alias cd="z"
+command -v zoxide >/dev/null 2>&1 && alias cd="z"
 
 # List files using eza with icons always enabled:
-alias ls="eza --icons=always"
+command -v eza >/dev/null 2>&1 && alias ls="eza --icons=always"
 
 # Long listing including hidden files:
 alias la="ls -la"
@@ -20,10 +20,10 @@ alias ll="ls -l"
 alias ltr="ls -ltr"
 
 # Use xh (friendly HTTP client) instead of curl/httpie:
-alias http="xh"
+command -v xh >/dev/null 2>&1 && alias http="xh"
 
 # Ripgrep case-insensitive without headings:
-alias g="rg -i --no-heading"
+command -v rg >/dev/null 2>&1 && alias g="rg -i --no-heading"
 
 # Show largest items in current directory (human-readable, top 10):
 alias dsz="du -s \`pwd\`/* | sort -nr | cut -f 2- | while read a; do du -sh \"$a\"; done|head"
