@@ -6,11 +6,4 @@
 #
 # Per-machine secret encryption (age/pgp) is deferred to a later epoch.
 
-version = 2
-
-[sourceDir]
-  path = "~/.local/share/chezmoi"
-
-[encryption]
-  age = "recipient-age-placeholder"
-  age-identity = "path/to/age-key.txt"
+sourceDir = "~/.local/share/chezmoi"
