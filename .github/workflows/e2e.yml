@@ -27,16 +27,9 @@ on:
 jobs:
   e2e:
     runs-on: ubuntu-latest
-    container:
-      image: ubuntu:26.10
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
-      - name: Install base tools
-        run: |
-          apt-get update && apt-get install -y --no-install-recommends \
-            sudo curl wget ca-certificates git bash zsh xz-utils tar gnupg
 
       - name: Build Docker test image
         run: |
