@@ -19,6 +19,10 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # mimocode
 export PATH="$HOME/.mimocode/bin:$PATH"
 
+# pnpm
+export PNPM_HOME="$HOME/.local/share/pnpm"
+export PATH="$PNPM_HOME/bin:$PATH"
+
 # mise (activate pinned toolchains via shims)
 eval "$(mise activate zsh)"
 
@@ -31,6 +35,9 @@ export EDITOR="$(which nvim)"
 
 # Docker:
 export DOCKER_CLI_HINTS=false  # disable ads in CLI :)
+
+# zsh-syntax-highlighting
+export ZSH_HIGHLIGHT_MAXLENGTH=200
 
 # Pagers:
 # This affects every invocation of `less`.
