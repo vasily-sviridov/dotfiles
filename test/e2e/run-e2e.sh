@@ -112,7 +112,11 @@ for pair in node:lts go:1.27.3 python:3.14 rust:stable java:21; do
   if echo "$ACTUAL" | grep -q "^$tool $ver"; then
     echo "OK   $tool $ver"
   else
-    fail "mise: expected $tool=$ver, got: $(echo "$ACTUAL" | grep "^$tool " || echo "<not installed>)"
+    actual_line=$(echo "$ACTUAL" | grep "^$tool " || true)
+    if [ -z "$actual_line" ]; then
+      actual_line="<not installed>"
+    fi
+    fail "mise: expected $tool=$ver, got: $actual_line"
   fi
 done
 
