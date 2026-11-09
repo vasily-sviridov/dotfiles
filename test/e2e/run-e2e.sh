@@ -82,7 +82,7 @@ for t in node go python rustc java; do
     MISSING_TOOLS="$MISSING_TOOLS $t"
   fi
 done
-for t in eza zoxide ruff uv cargo git-delta; do
+for t in eza zoxide ruff uv cargo delta; do
   if command -v "$t" >/dev/null 2>&1; then
     printf "%-10s %s\n" "$t" "$(command -v "$t")"
   else
