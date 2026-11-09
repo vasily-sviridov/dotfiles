@@ -71,26 +71,14 @@ setup_chezmoi() {
 # ---------------------------------------------------------------------------
 
 install_ubuntu_packages() {
-  run sudo apt-get update
-
-  local packages=(
-    build-essential
-    cmake
-    ninja-build
-    git
-    curl
-    wget
-    jq
-    fzf
-    neovim
-    python3
-    python3-venv
-    tmux
-    unzip
-    zsh
-  )
-
-  run sudo apt-get install -y "${packages[@]}"
+  local packages_file="$ROOT_DIR/ubuntu-packages.txt"
+  if [[ ! -f "$packages_file" ]]; then
+    warn "$packages_file not found, skipping apt packages"
+  else
+    run sudo apt-get update
+    # shellcheck disable=SC2046
+    run sudo apt-get install -y $(grep -vE '^\s*(#|$)' "$packages_file" | tr '\n' ' ')
+  fi
 
   # clang-22 (system, not managed by mise)
   if ! has clang-22; then
@@ -106,21 +94,13 @@ install_macos_packages() {
 
   run brew update
 
-  local packages=(
-    cmake
-    ninja
-    git
-    curl
-    wget
-    jq
-    fzf
-    neovim
-    tmux
-    zsh
-    llvm
-  )
-
-  run brew install "${packages[@]}"
+  local packages_file="$ROOT_DIR/macos-packages.txt"
+  if [[ ! -f "$packages_file" ]]; then
+    warn "$packages_file not found, skipping brew packages"
+  else
+    # shellcheck disable=SC2046
+    run brew install $(grep -vE '^\s*(#|$)' "$packages_file" | tr '\n' ' ')
+  fi
 }
 
 # ---------------------------------------------------------------------------

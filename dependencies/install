@@ -6,9 +6,6 @@ ROOT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$ROOT_DIR/lib/common.sh"
 source "$ROOT_DIR/lib/ubuntu.sh"
 source "$ROOT_DIR/lib/macos.sh"
-source "$ROOT_DIR/lib/rust.sh"
-source "$ROOT_DIR/lib/nvm.sh"
-source "$ROOT_DIR/lib/go.sh"
 source "$ROOT_DIR/lib/uv.sh"
 
 main() {
@@ -19,9 +16,6 @@ main() {
     macos)  install_macos ;;
   esac
 
-  install_rust
-  install_nvm
-  install_golang
   install_uv
 
   success "Done 🎉"

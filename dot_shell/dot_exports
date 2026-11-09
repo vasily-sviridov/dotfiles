@@ -19,7 +19,7 @@ export PATH="$BUN_INSTALL/bin:$PATH"
 # mimocode
 export PATH="$HOME/.mimocode/bin:$PATH"
 
-# mise (replaces nvm/sdkman/golang/rustup version managers)
+# mise (activate pinned toolchains via shims)
 eval "$(mise activate zsh)"
 
 # --- End Path modifications ---

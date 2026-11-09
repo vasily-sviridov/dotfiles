@@ -16,4 +16,4 @@ git submodule sync --quiet --recursive 2>/dev/null || true
 git submodule update --init --recursive 2>/dev/null || true
 
 # Thin entrypoint: delegate to the shared bootstrap.
-run ./dependencies/bootstrap.sh "$@"
+./dependencies/bootstrap.sh "$@"
