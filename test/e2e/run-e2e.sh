@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# E2E test for mise + chezmoi migration (Epoch 3 gate).
+# E2E test for mise + chezmoi migration.
 # Fresh clone + ./install, then verify tools + dotfiles + no dotbot.
 set +uo pipefail  # не прерываемся на ошибках — хотим увидеть всё
 
@@ -14,13 +14,13 @@ echo ""
 echo "========== 2. dotbot remnants (should be none outside test/ and .agent-plans) =========="
 DOTBOT_FOUND=0
 if grep -rln "dotbot" --include="*.sh" --include="*.md" --include="*.toml" --include="*.ignore" --include="*.yaml" . 2>/dev/null \
-   | grep -v "^./\.agent-plans/" | grep -v "^./test/" | grep -q .; then
+   | grep -v "^./test/" | grep -q .; then
   echo "DOTBOT REFERENCES FOUND:"
   grep -rln "dotbot" --include="*.sh" --include="*.md" --include="*.toml" --include="*.ignore" --include="*.yaml" . 2>/dev/null \
-     | grep -v "^./\.agent-plans/" | grep -v "^./test/"
+     | grep -v "^./test/"
   DOTBOT_FOUND=1
 else
-  echo "OK: no dotbot references outside test/ and .agent-plans (historical plan doc)"
+  echo "OK: no dotbot references outside test/"
 fi
 
 echo ""
@@ -39,7 +39,7 @@ done
 
 echo ""
 echo "========== 5. mise =========="
-export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$PATH"
+export PATH="$HOME/.local/bin:$HOME/.cargo/bin:$HOME/.local/share/mise/shims:$PATH"
 mise --version 2>/dev/null || echo "mise not on PATH"
 mise current 2>&1 || echo "mise current failed"
 
