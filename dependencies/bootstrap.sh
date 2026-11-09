@@ -31,9 +31,19 @@ install_mise() {
     return
   fi
   log "Installing mise"
-  run curl https://mise.run | sh
+  # mise.run can flake (504 etc.); retry up to 3 times before giving up.
+  for i in 1 2 3; do
+    if curl -fsSL https://mise.run | sh; then
+      break
+    fi
+    warn "mise install attempt $i failed, retrying..."
+    sleep 5
+  done
   # mise.run installs to $HOME/.local/bin/mise; make it available in this shell
   export PATH="$HOME/.local/bin:$PATH"
+  if ! has mise; then
+    die "mise installation failed after retries"
+  fi
 }
 
 activate_mise() {
