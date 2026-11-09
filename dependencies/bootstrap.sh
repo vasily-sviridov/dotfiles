@@ -165,10 +165,12 @@ install_uv_tools() {
 
   install_uv
 
-  # shellcheck disable=SC2046
-  grep -vE '^\s*(#|$)' "$tools_file" | tr '\n' ' ' | while read -r tool; do
+  local tool
+  while IFS= read -r tool || [ -n "$tool" ]; do
+    # skip blank lines and comments
+    [[ -z "${tool// }" || "$tool" =~ ^[[:space:]]*# ]] && continue
     run uv tool install "$tool"
-  done
+  done < "$tools_file"
 }
 
 # ---------------------------------------------------------------------------
