@@ -2,7 +2,7 @@ name: E2E (mise + chezmoi migration)
 
 on:
   push:
-    branches: [main]
+    branches: ['*']
   pull_request:
     branches: [main]
 
