@@ -191,10 +191,29 @@ install_zerobrew() {
     return
   fi
   log "Installing zerobrew"
-  # zerobrew installs to ~/.zerobrew/bin
-  retry 3 sh -c 'curl -fsSL https://github.com/zerobrewhq/zerobrew/releases/latest/download/zerobrew-$(uname -s)-$(uname -m).tar.gz | tar xz -C "$HOME/.zerobrew/bin"' \
-    || die "zerobrew installation failed after retries"
+
+  # Determine platform and architecture for zerobrew release assets.
+  # Release assets are named: zb-<os>-<arch> (e.g. zb-linux-x64, zb-darwin-arm64)
+  local os arch
+  case "$(uname -s)" in
+    Linux) os="linux" ;;
+    Darwin) os="darwin" ;;
+    *) die "Unsupported OS: $(uname -s)" ;;
+  esac
+  case "$(uname -m)" in
+    x86_64) arch="x64" ;;
+    aarch64|arm64) arch="arm64" ;;
+    *) die "Unsupported architecture: $(uname -m)" ;;
+  esac
+
+  local url="https://github.com/zerobrewhq/zerobrew/releases/latest/download/zb-${os}-${arch}"
+  mkdir -p "$HOME/.zerobrew/bin"
+
+  # zerobrew can flake; retry with backoff.
+  retry 3 sh -c "curl -fsSL --retry 3 '${url}' -o '$HOME/.zerobrew/bin/zerobrew'" || die "zerobrew download failed after retries"
+  chmod +x "$HOME/.zerobrew/bin/zerobrew"
   export PATH="$HOME/.zerobrew/bin:$PATH"
+
   if ! has zerobrew; then
     die "zerobrew is not available on PATH"
   fi
