@@ -228,6 +228,10 @@ install_zerobrew_packages() {
 
   install_zerobrew
 
+  # Initialize zerobrew store before installing any packages.
+  log "Initializing zerobrew store"
+  retry 3 zerobrew init || warn "zerobrew init failed after retries"
+
   log "Installing zerobrew packages"
   local pkg
   while IFS= read -r pkg || [ -n "$pkg" ]; do
