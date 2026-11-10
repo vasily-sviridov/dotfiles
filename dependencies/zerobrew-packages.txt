@@ -1,0 +1,5 @@
+# Packages installed via zerobrew from dependencies/bootstrap.sh.
+# One package per line. Comments are allowed.
+kubernetes-cli
+fluxcd
+yq
