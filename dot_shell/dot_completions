@@ -1,0 +1,48 @@
+#!/usr/bin/env zsh
+
+# `.completions` — zsh completion functions.
+#
+# Generated once: only when the target file is missing in ~/.zfunc or the
+# tool binary has been updated. Do not run `eval "$(tool completion zsh)"`
+# on every shell start — that adds milliseconds to each zsh launch.
+# Ready-made `_*` functions are picked up by compinit via fpath in dot_zshrc.
+
+zsh_func_dir="$HOME/.zfunc"
+mkdir -p "$zsh_func_dir"
+
+# Regenerate completion only when the target file is missing or older than
+# the tool binary.
+refresh_completion() {
+    local tool="$1" binary="$2" generator="$3"
+    local target="$zsh_func_dir/_$tool"
+    local bin_path
+
+    bin_path="$(command -v "$binary" 2>/dev/null)" || return 0
+
+    if [[ ! -f "$target" ]] || [[ "$bin_path" -nt "$target" ]]; then
+        eval "$generator" > "$target" 2>/dev/null || {
+            command rm -f -- "$target"
+            return 1
+        }
+    fi
+}
+
+# --- Tools -------------------------------------------------------------
+
+refresh_completion bat       bat       'bat --completion zsh'
+refresh_completion delta     delta     'delta --generate-completion zsh'
+refresh_completion gh        gh        'gh completion -s zsh'
+refresh_completion glab      glab      'glab completion -s zsh'
+refresh_completion helm      helm      'helm completion zsh'
+refresh_completion docker    docker    'docker completion zsh'
+refresh_completion kubectl   kubectl   'kubectl completion zsh'
+refresh_completion chezmoi   chezmoi   'chezmoi completion zsh'
+refresh_completion uv        uv        'uv generate-shell-completion zsh'
+refresh_completion pnpm      pnpm      'pnpm completion zsh'
+refresh_completion mise      mise      'mise completion zsh'
+refresh_completion cargo     rustup    'rustup completions zsh cargo'
+refresh_completion zoxide    zoxide    'zoxide init zsh'
+refresh_completion fd       fd        'fd --gen-completions zsh'
+refresh_completion rg       rg        'rg --generate complete-zsh'
+
+fpath+=("$zsh_func_dir")
