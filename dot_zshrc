@@ -13,6 +13,7 @@ plugins=(
 )
 
 fpath+=~/.zfunc
+source "$HOME/.shell/dot_completions"
 
 source "$ZSH/oh-my-zsh.sh"
 
