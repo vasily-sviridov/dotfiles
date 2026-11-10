@@ -220,15 +220,22 @@ install_zerobrew() {
 }
 
 install_zerobrew_packages() {
-  local packages=(
-    kubernetes-cli
-    fluxcd
-  )
+  local packages_file="$ROOT_DIR/zerobrew-packages.txt"
+  if [[ ! -f "$packages_file" ]]; then
+    warn "$packages_file not found, skipping zerobrew packages"
+    return
+  fi
 
-  for pkg in "${packages[@]}"; do
+  install_zerobrew
+
+  log "Installing zerobrew packages"
+  local pkg
+  while IFS= read -r pkg || [ -n "$pkg" ]; do
+    # skip blank lines and comments
+    [[ -z "${pkg// }" || "$pkg" =~ ^[[:space:]]*# ]] && continue
     log "Installing zerobrew package: $pkg"
     retry 3 zerobrew install "$pkg" || warn "zerobrew install $pkg failed after retries"
-  done
+  done < "$packages_file"
 }
 
 # ---------------------------------------------------------------------------
