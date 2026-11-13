@@ -10,7 +10,7 @@ fail() {
   FAIL=1
 }
 
-cd /dotfiles
+cd "$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)/../.."
 
 echo "========== 1. ./install (fresh clone) =========="
 ./install
