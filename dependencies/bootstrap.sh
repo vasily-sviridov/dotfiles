@@ -132,12 +132,8 @@ install_cargo_binstall() {
     return
   fi
 
-  if ! has cargo; then
-    die "cargo is required to install cargo-binstall (install rust via mise first)"
-  fi
-
-  log "Installing cargo-binstall"
-  retry 3 cargo install cargo-binstall || die "cargo-binstall installation failed after retries"
+  log "Installing cargo-binstall via zerobrew (prebuilt binary, no cargo build)"
+  retry 3 zerobrew install cargo-binstall || die "cargo-binstall installation via zerobrew failed after retries"
 }
 
 install_crates() {
