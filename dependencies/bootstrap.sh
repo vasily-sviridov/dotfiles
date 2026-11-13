@@ -101,18 +101,24 @@ install_ubuntu_packages() {
 }
 
 install_macos_packages() {
-  if ! has brew; then
-    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  fi
+  # zerobrew installed in main() before platform branch; no need to call it here again
 
-  run brew update
+  # Initialize zerobrew store before installing any packages.
+  log "Initializing zerobrew store"
+  retry 3 zerobrew init || warn "zerobrew init failed after retries"
 
   local packages_file="$ROOT_DIR/macos-packages.txt"
   if [[ ! -f "$packages_file" ]]; then
-    warn "$packages_file not found, skipping brew packages"
+    warn "$packages_file not found, skipping zerobrew packages"
   else
-    # shellcheck disable=SC2046
-    retry 3 brew install $(grep -vE '^\s*(#|$)' "$packages_file" | tr '\n' ' ')
+    log "Installing macOS packages via zerobrew (from macos-packages.txt)"
+    local pkg
+    while IFS= read -r pkg || [ -n "$pkg" ]; do
+      # skip blank lines and comments
+      [[ -z "${pkg// }" || "$pkg" =~ ^[[:space:]]*# ]] && continue
+      log "Installing zerobrew package: $pkg"
+      retry 3 zerobrew install "$pkg" || warn "zerobrew install $pkg failed after retries"
+    done < "$packages_file"
   fi
 }
 
@@ -250,6 +256,9 @@ main() {
   install_mise
   activate_mise
 
+  # zerobrew is needed for macOS packages; installed once before platform branch.
+  install_zerobrew
+
   # System packages first: mise-installed node needs libatomic1,
   # rust/cargo needs a C compiler (build-essential / llvm).
   case "$(uname -s)" in
@@ -266,7 +275,6 @@ main() {
   install_crates
   install_uv_tools
 
-  install_zerobrew
   install_zerobrew_packages
 
   success "Bootstrap done 🎉"
