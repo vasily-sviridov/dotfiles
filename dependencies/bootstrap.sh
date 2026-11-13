@@ -101,11 +101,7 @@ install_ubuntu_packages() {
 }
 
 install_macos_packages() {
-  # zerobrew installed in main() before platform branch; no need to call it here again
-
-  # Initialize zerobrew store before installing any packages.
-  log "Initializing zerobrew store"
-  retry 3 zerobrew init || warn "zerobrew init failed after retries"
+  # zerobrew installed and initialized in main() before platform branch.
 
   local packages_file="$ROOT_DIR/macos-packages.txt"
   if [[ ! -f "$packages_file" ]]; then
@@ -216,6 +212,9 @@ install_zerobrew() {
   retry 3 sh -c "curl -fsSL --retry 3 '${url}' -o '$HOME/.zerobrew/bin/zerobrew'" || die "zerobrew download failed after retries"
   chmod +x "$HOME/.zerobrew/bin/zerobrew"
   export PATH="$HOME/.zerobrew/bin:$PATH"
+
+  # Initialize zerobrew store so subsequent `zerobrew install` calls work.
+  retry 3 zerobrew init || warn "zerobrew init failed; packages may fail to install"
 
   if ! has zerobrew; then
     die "zerobrew is not available on PATH"
