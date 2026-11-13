@@ -127,7 +127,22 @@ install_cargo_binstall() {
   log "Installing cargo-binstall via zerobrew (prebuilt binary, no cargo build)"
   retry 3 zerobrew install cargo-binstall || die "cargo-binstall installation via zerobrew failed after retries"
 
+  # Debug: verify zerobrew installed cargo-binstall where we expect it
+  warn "DEBUG: ZEROBREW_PREFIX=$ZEROBREW_PREFIX"
+  warn "DEBUG: PATH before export=$PATH"
+  if [[ -n "$ZEROBREW_PREFIX" && -d "$ZEROBREW_PREFIX/bin" ]]; then
+    warn "DEBUG: contents of $ZEROBREW_PREFIX/bin:"
+    ls -la "$ZEROBREW_PREFIX/bin" | while read -r line; do warn "DEBUG:   $line"; done
+  else
+    warn "DEBUG: $ZEROBREW_PREFIX/bin does not exist or ZEROBREW_PREFIX is empty"
+  fi
+  warn "DEBUG: which cargo-binstall before PATH export: $(command -v cargo-binstall 2>&1 || echo 'NOT FOUND')"
+
   export PATH="$ZEROBREW_PREFIX/bin:$PATH"
+
+  warn "DEBUG: PATH after export=$PATH"
+  warn "DEBUG: which cargo-binstall after PATH export: $(command -v cargo-binstall 2>&1 || echo 'NOT FOUND')"
+  warn "DEBUG: cargo --list (grep binstall): $(cargo --list 2>/dev/null | grep -i binstall || echo 'no binstall subcommand found')"
 }
 
 install_crates() {
