@@ -118,10 +118,6 @@ install_macos_packages() {
   fi
 }
 
-# ---------------------------------------------------------------------------
-# cargo-binstall crates
-# ---------------------------------------------------------------------------
-
 install_cargo_binstall() {
   if has cargo-binstall; then
     success "cargo-binstall already installed"
@@ -130,7 +126,8 @@ install_cargo_binstall() {
 
   log "Installing cargo-binstall via zerobrew (prebuilt binary, no cargo build)"
   retry 3 zerobrew install cargo-binstall || die "cargo-binstall installation via zerobrew failed after retries"
-  export PATH="$HOME/.local/share/zerobrew/prefix/bin:$PATH"
+
+  export PATH="$ZEROBREW_PREFIX/bin:$PATH"
 }
 
 install_crates() {
@@ -215,7 +212,6 @@ install_zerobrew() {
 
   # Initialize zerobrew store so subsequent `zerobrew install` calls work.
   retry 3 zerobrew init || warn "zerobrew init failed; packages may fail to install"
-
   if ! has zerobrew; then
     die "zerobrew is not available on PATH"
   fi
