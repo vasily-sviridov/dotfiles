@@ -185,7 +185,7 @@ install_uv_tools() {
 install_zerobrew() {
   # zerobrew prefix differs by OS; export early so later installs can find binaries.
   if has brew; then
-    export ZEROBREW_PREFIX="$(brew --prefix)/opt/zerobrew"
+    export ZEROBREW_PREFIX="/opt/zerobrew"
   else
     export ZEROBREW_PREFIX="$HOME/.local/share/zerobrew/prefix"
   fi
