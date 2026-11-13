@@ -134,6 +134,7 @@ install_cargo_binstall() {
 
   log "Installing cargo-binstall via zerobrew (prebuilt binary, no cargo build)"
   retry 3 zerobrew install cargo-binstall || die "cargo-binstall installation via zerobrew failed after retries"
+  export PATH="$HOME/.local/share/zerobrew/prefix/bin:$PATH"
 }
 
 install_crates() {
